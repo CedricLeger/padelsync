@@ -1,0 +1,47 @@
+{
+  "timeZone": "Europe/Paris",
+  "runtimeVersion": "V8",
+  "dependencies": {},
+  "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/script.scriptapp",
+    "https://mail.google.com/"
+  ],
+  "addOns": {
+    "common": {
+      "name": "Padel Sync",
+      "logoUrl": "https://TODO_REPLACE_WITH_HOSTED_LOGO_URL/logo_128.png",
+      "layoutProperties": {
+        "primaryColor": "#4CAF50",
+        "secondaryColor": "#FFFFFF"
+      },
+      "homepageTrigger": {
+        "runFunction": "onHomepage"
+      },
+      "universalActions": [
+        {
+          "label": "Configuration",
+          "runFunction": "showConfigCard"
+        }
+      ],
+      "openLinkUrlPrefixes": [
+        "https://TODO_REPLACE_WITH_GITHUB_PAGES_URL/"
+      ]
+    },
+    "gmail": {
+      "contextualTriggers": [
+        {
+          "unconditional": {},
+          "onTriggerFunction": "onGmailMessage"
+        }
+      ]
+    },
+    "calendar": {
+      "homepageTrigger": {
+        "runFunction": "onHomepage"
+      }
+    }
+  }
+}

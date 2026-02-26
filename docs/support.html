@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padel Sync — Support</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    h1 { color: #4CAF50; margin-bottom: 8px; }
+    h2 { color: #333; margin-top: 32px; margin-bottom: 12px; }
+    h3 { color: #555; margin-top: 20px; margin-bottom: 8px; }
+    p, ul { margin-bottom: 16px; }
+    ul { padding-left: 24px; }
+    .subtitle { color: #666; font-size: 16px; margin-bottom: 32px; }
+    .faq { background: #f8f8f8; padding: 20px; border-radius: 8px; margin: 16px 0; }
+    .faq h3 { margin-top: 0; color: #333; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+    a { color: #4CAF50; }
+    .contact { background: #f0f7f0; padding: 20px; border-radius: 8px; border-left: 4px solid #4CAF50; margin: 32px 0; }
+    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #eee; font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Support Padel Sync</h1>
+  <p class="subtitle">Aide et questions fréquentes</p>
+
+  <h2>Fournisseurs d'emails supportés</h2>
+  <p>Padel Sync reconnaît automatiquement les emails de :</p>
+  <ul>
+    <li><strong>Arena</strong> (livexperience.fr) — Invitations et réservations</li>
+    <li><strong>TenUp / FFT</strong> (contact@clients.fft.fr) — Confirmations de réservation</li>
+    <li><strong>DoInSport</strong> (doinsport.com) — Confirmations de réservation</li>
+  </ul>
+  <p>Vous pouvez ajouter d'autres expéditeurs dans la configuration. L'add-on essaiera de parser les emails avec ses différents formats.</p>
+
+  <h2>Questions fréquentes</h2>
+
+  <div class="faq">
+    <h3>L'add-on ne détecte pas mes emails</h3>
+    <p>Vérifiez que :</p>
+    <ul>
+      <li>L'expéditeur est bien dans votre liste de configuration (Configuration > Expéditeurs).</li>
+      <li>Le trigger de scan est actif (visible sur la page d'accueil de l'add-on).</li>
+      <li>L'email n'a pas déjà le label "PadelSync" (= déjà traité).</li>
+    </ul>
+  </div>
+
+  <div class="faq">
+    <h3>Les heures des événements sont décalées</h3>
+    <p>Vérifiez votre fuseau horaire dans la configuration. Il doit correspondre au fuseau de votre lieu de jeu (ex : <code>Europe/Paris</code>, <code>America/Martinique</code>).</p>
+  </div>
+
+  <div class="faq">
+    <h3>Comment retraiter les anciens emails ?</h3>
+    <p>Utilisez la fonction "Supprimer tous les événements" dans l'add-on. Cela retire aussi le label "PadelSync" des emails, ce qui permet au prochain scan de les retraiter.</p>
+    <p>Pour rattraper un historique important, augmentez temporairement le "Max emails par scan" à 100 ou 200 dans la configuration.</p>
+  </div>
+
+  <div class="faq">
+    <h3>Comment ajouter un nouveau fournisseur ?</h3>
+    <p>Dans la configuration, ajoutez l'adresse email du fournisseur dans le champ "Expéditeurs", séparée par une virgule. Si vous devez filtrer par sujet d'email, utilisez la syntaxe : <code>adresse@email.com|Mot clé dans le sujet</code></p>
+  </div>
+
+  <div class="faq">
+    <h3>Comment désinstaller Padel Sync ?</h3>
+    <ol>
+      <li>Optionnel : utilisez "Supprimer tous les événements" dans l'add-on pour nettoyer votre calendrier.</li>
+      <li>Allez sur le <a href="https://workspace.google.com/marketplace" target="_blank">Google Workspace Marketplace</a>.</li>
+      <li>Trouvez Padel Sync dans vos applications installées.</li>
+      <li>Cliquez sur "Désinstaller".</li>
+    </ol>
+  </div>
+
+  <div class="faq">
+    <h3>Mes données sont-elles sécurisées ?</h3>
+    <p>Oui. Padel Sync ne stocke aucune donnée en dehors de votre compte Google. Aucune donnée n'est envoyée à des serveurs externes. Consultez notre <a href="privacy-policy.html">politique de confidentialité</a> pour plus de détails.</p>
+  </div>
+
+  <div class="contact">
+    <h2>Besoin d'aide supplémentaire ?</h2>
+    <p>Contactez-nous par email : <strong>padelsync@proton.me</strong></p>
+    <p>Signalez un bug ou proposez une amélioration sur <a href="https://github.com/TODO_REPLACE/padel-sync/issues" target="_blank">GitHub Issues</a>.</p>
+  </div>
+
+  <footer>
+    <p>Padel Sync — Add-on Google Workspace gratuit</p>
+    <p><a href="privacy-policy.html">Politique de confidentialité</a> · <a href="terms-of-service.html">Conditions d'utilisation</a></p>
+  </footer>
+</body>
+</html>

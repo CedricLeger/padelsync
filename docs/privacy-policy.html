@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padel Sync — Politique de confidentialité</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    h1 { color: #4CAF50; margin-bottom: 8px; }
+    h2 { color: #333; margin-top: 32px; margin-bottom: 12px; }
+    p, ul { margin-bottom: 16px; }
+    ul { padding-left: 24px; }
+    .date { color: #666; font-size: 14px; margin-bottom: 32px; }
+    .highlight { background: #f0f7f0; padding: 16px; border-radius: 8px; border-left: 4px solid #4CAF50; margin: 24px 0; }
+    a { color: #4CAF50; }
+    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #eee; font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Politique de confidentialité</h1>
+  <p class="date">Dernière mise à jour : 25 février 2026</p>
+
+  <div class="highlight">
+    <strong>En résumé :</strong> Padel Sync ne collecte, ne stocke et ne partage aucune donnée personnelle en dehors de votre propre compte Google. Toutes les données restent dans votre environnement Google.
+  </div>
+
+  <h2>1. Données traitées</h2>
+  <p>Padel Sync accède aux données suivantes de votre compte Google :</p>
+  <ul>
+    <li><strong>Emails Gmail</strong> : lecture des emails provenant d'expéditeurs de réservation padel que vous avez configurés (ex : Arena, TenUp/FFT, DoInSport). Seuls le sujet, le corps du message et les métadonnées (date, expéditeur) sont lus pour extraire les informations de réservation.</li>
+    <li><strong>Labels Gmail</strong> : création et gestion d'un label "PadelSync" pour marquer les emails déjà traités.</li>
+    <li><strong>Google Calendar</strong> : création, modification et suppression d'événements dans le calendrier que vous avez choisi.</li>
+  </ul>
+
+  <h2>2. Stockage des données</h2>
+  <p>Padel Sync stocke uniquement :</p>
+  <ul>
+    <li><strong>Votre configuration</strong> (expéditeurs, fuseau horaire, préférences) dans les User Properties de Google Apps Script, accessibles uniquement par vous.</li>
+    <li><strong>Un historique des synchronisations</strong> (date, type, statut — max 50 entrées) dans vos User Properties.</li>
+  </ul>
+  <p>Aucune donnée n'est stockée en dehors de votre compte Google. Il n'y a pas de serveur externe, pas de base de données tierce, pas de stockage cloud autre que Google.</p>
+
+  <h2>3. Partage des données</h2>
+  <p>Padel Sync <strong>ne partage aucune donnée</strong> avec des tiers. Spécifiquement :</p>
+  <ul>
+    <li>Aucune donnée n'est vendue.</li>
+    <li>Aucune donnée n'est utilisée à des fins publicitaires.</li>
+    <li>Aucune donnée n'est transmise à des services externes.</li>
+    <li>Aucune donnée n'est accessible par le développeur de l'add-on.</li>
+  </ul>
+
+  <h2>4. Utilisation des scopes Google</h2>
+  <p>L'utilisation de Padel Sync et son transfert à tout autre application des informations reçues des API Google respectent la <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Politique relative aux données utilisateur des services API Google</a>, y compris les exigences d'utilisation limitée (Limited Use).</p>
+  <p>Les scopes demandés sont :</p>
+  <ul>
+    <li><strong>Gmail (modification)</strong> : pour lire les emails de réservation et gérer les labels.</li>
+    <li><strong>Calendar</strong> : pour créer et gérer les événements padel.</li>
+    <li><strong>Script</strong> : pour gérer les triggers de scan automatique.</li>
+  </ul>
+
+  <h2>5. Suppression des données</h2>
+  <p>Pour supprimer toutes les données de Padel Sync :</p>
+  <ul>
+    <li><strong>Désinstallez l'add-on</strong> depuis le Google Workspace Marketplace. Cela supprime automatiquement tous les triggers et les User Properties associés.</li>
+    <li><strong>Supprimez les événements</strong> créés via la fonction "Supprimer tous les événements" dans l'add-on avant de le désinstaller.</li>
+    <li><strong>Le label Gmail "PadelSync"</strong> peut être supprimé manuellement dans les paramètres Gmail.</li>
+  </ul>
+
+  <h2>6. Sécurité</h2>
+  <ul>
+    <li>Toutes les communications passent par les API sécurisées de Google (HTTPS).</li>
+    <li>La configuration de chaque utilisateur est isolée (User Properties).</li>
+    <li>Les entrées utilisateur sont validées (protection contre les injections).</li>
+    <li>Le contenu des emails n'est jamais stocké — seules les informations extraites (date, heure, terrain) sont utilisées.</li>
+  </ul>
+
+  <h2>7. Modifications de cette politique</h2>
+  <p>En cas de modification de cette politique, la date de mise à jour sera actualisée en haut de cette page. Les changements significatifs seront notifiés via les notes de mise à jour de l'add-on sur le Marketplace.</p>
+
+  <h2>8. Contact</h2>
+  <p>Pour toute question concernant cette politique de confidentialité, contactez-nous à : <strong>padelsync@proton.me</strong></p>
+
+  <footer>
+    <p>Padel Sync — Add-on Google Workspace gratuit</p>
+  </footer>
+</body>
+</html>
