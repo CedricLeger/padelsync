@@ -3,6 +3,30 @@
 // =============================================================================
 
 /**
+ * Retourne une icône correspondant au statut de synchronisation.
+ * @param {string} status - Le statut ("Créé", "Enrichi", "Doublon ignoré", "Erreur...", etc.)
+ * @return {IconImage} L'icône correspondante.
+ */
+function getStatusIcon_(status) {
+  if (status === "Créé") {
+    return CardService.newIconImage()
+      .setIconUrl("https://www.gstatic.com/images/icons/material/system/1x/check_circle_googgreen_24dp.png");
+  } else if (status === "Enrichi") {
+    return CardService.newIconImage()
+      .setIcon(CardService.Icon.STAR);
+  } else if (status === "Doublon ignoré") {
+    return CardService.newIconImage()
+      .setIcon(CardService.Icon.OFFER);
+  } else if (status.indexOf("Erreur") === 0) {
+    return CardService.newIconImage()
+      .setIcon(CardService.Icon.EMAIL);
+  } else {
+    return CardService.newIconImage()
+      .setIcon(CardService.Icon.BOOKMARK);
+  }
+}
+
+/**
  * Homepage trigger — Point d'entrée principal de l'add-on.
  * Affiche le statut, les actions rapides et l'historique récent.
  * @param {Object} e - Événement add-on.
@@ -12,70 +36,60 @@ function onHomepage(e) {
   var config = getConfig();
   var health = healthCheck_();
 
+  // Header dynamique avec dernière synchro
+  var subtitleText;
+  if (!health.trigger) {
+    subtitleText = "Configuration requise";
+  } else if (health.lastSync) {
+    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Synchro " + health.lastSync;
+  } else {
+    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Sync active";
+  }
+
   var card = CardService.newCardBuilder()
     .setHeader(CardService.newCardHeader()
       .setTitle("Padel Sync")
-      .setSubtitle(health.trigger
-        ? "Sync active \u2014 v" + PADEL_SYNC_VERSION
-        : "Configuration requise")
+      .setSubtitle(subtitleText)
       .setImageUrl("https://cedricleger.github.io/padelsync/logo_128.png")
       .setImageStyle(CardService.ImageStyle.CIRCLE));
-
-  // === Bannière visuelle ===
-  var bannerSection = CardService.newCardSection();
-  bannerSection.addWidget(CardService.newImage()
-    .setImageUrl("https://cedricleger.github.io/padelsync/banner_card.png")
-    .setAltText("Padel Sync \u2014 Synchronisez vos matchs"));
-  card.addSection(bannerSection);
 
   // === Section Statut ===
   var statusSection = CardService.newCardSection()
     .setHeader("Statut");
 
-  statusSection.addWidget(CardService.newDecoratedText()
+  var scanWidget = CardService.newDecoratedText()
     .setText(health.trigger
-      ? "Toutes les " + config.SCAN_INTERVAL_MINUTES + " min"
-      : "Absent \u2014 configurez l'add-on")
+      ? "Actif \u2014 toutes les " + config.SCAN_INTERVAL_MINUTES + " min"
+      : "Inactif \u2014 configurez l'add-on")
     .setTopLabel("Scan automatique")
-    .setStartIcon(CardService.newIconImage()
-      .setIconUrl(health.trigger
-        ? "https://www.gstatic.com/images/icons/material/system/1x/check_circle_googgreen_24dp.png"
-        : "https://www.gstatic.com/images/icons/material/system/1x/error_googred_24dp.png")));
+    .setWrapText(true);
 
-  statusSection.addWidget(CardService.newDecoratedText()
-    .setText(health.calendar || health.calendarError || "Non configuré")
-    .setTopLabel("Calendrier")
-    .setIcon(CardService.Icon.INVITE));
-
-  if (health.lastSync) {
-    statusSection.addWidget(CardService.newDecoratedText()
-      .setText(health.lastSync)
-      .setTopLabel("Dernière synchro")
+  if (health.trigger) {
+    scanWidget.setStartIcon(CardService.newIconImage()
+      .setIconUrl("https://www.gstatic.com/images/icons/material/system/1x/check_circle_googgreen_24dp.png"));
+  } else {
+    scanWidget.setStartIcon(CardService.newIconImage()
       .setIcon(CardService.Icon.CLOCK));
   }
 
+  statusSection.addWidget(scanWidget);
+
+  var calendarText = health.calendar || health.calendarError || "Non configuré";
+  var calWidget = CardService.newDecoratedText()
+    .setText(calendarText)
+    .setTopLabel("Calendrier")
+    .setIcon(CardService.Icon.INVITE)
+    .setWrapText(true);
+
+  if (!health.calendar) {
+    calWidget.setButton(CardService.newTextButton()
+      .setText("Configurer")
+      .setOnClickAction(CardService.newAction().setFunctionName("showConfigCard"))
+      .setTextButtonStyle(CardService.TextButtonStyle.TEXT));
+  }
+
+  statusSection.addWidget(calWidget);
   card.addSection(statusSection);
-
-  // === Section Actions ===
-  var actionsSection = CardService.newCardSection()
-    .setHeader("Actions");
-
-  var buttonSet = CardService.newButtonSet();
-  buttonSet.addButton(CardService.newTextButton()
-    .setText("Scanner maintenant")
-    .setOnClickAction(CardService.newAction().setFunctionName("triggerScanFromCard"))
-    .setTextButtonStyle(CardService.TextButtonStyle.FILLED));
-  buttonSet.addButton(CardService.newTextButton()
-    .setText("Configuration")
-    .setOnClickAction(CardService.newAction().setFunctionName("showConfigCard")));
-  actionsSection.addWidget(buttonSet);
-
-  actionsSection.addWidget(CardService.newTextButton()
-    .setText("Supprimer tous les événements")
-    .setOnClickAction(CardService.newAction().setFunctionName("confirmDeleteEvents"))
-    .setTextButtonStyle(CardService.TextButtonStyle.TEXT));
-
-  card.addSection(actionsSection);
 
   // === Section Historique récent ===
   var logs = getSyncLog(5);
@@ -83,28 +97,46 @@ function onHomepage(e) {
     var historySection = CardService.newCardSection()
       .setHeader("Historique récent")
       .setCollapsible(true)
-      .setNumUncollapsibleWidgets(3);
+      .setNumUncollapsibleWidgets(2);
 
     for (var i = 0; i < logs.length; i++) {
       var entry = logs[i];
-      var statusEmoji = entry.status === "Créé" ? "\uD83D\uDFE2" :
-                        entry.status === "Enrichi" ? "\uD83D\uDD35" :
-                        entry.status === "Doublon ignoré" ? "\u26AA" :
-                        entry.status.indexOf("Erreur") === 0 ? "\uD83D\uDD34" : "\uD83D\uDFE1";
       var label = entry.date;
       if (entry.court) label += " \u2014 " + entry.court;
+
       historySection.addWidget(CardService.newDecoratedText()
-        .setText(statusEmoji + " " + entry.status)
+        .setText(entry.status)
         .setTopLabel(label)
-        .setIcon(CardService.Icon.DESCRIPTION));
+        .setStartIcon(getStatusIcon_(entry.status))
+        .setWrapText(true));
     }
 
     historySection.addWidget(CardService.newTextButton()
       .setText("Voir tout l'historique")
-      .setOnClickAction(CardService.newAction().setFunctionName("showFullHistoryCard")));
+      .setOnClickAction(CardService.newAction().setFunctionName("showFullHistoryCard"))
+      .setTextButtonStyle(CardService.TextButtonStyle.TEXT));
 
     card.addSection(historySection);
   }
+
+  // === Section Zone de danger (collapsible, fermée par défaut) ===
+  var dangerSection = CardService.newCardSection()
+    .setHeader("Zone de danger")
+    .setCollapsible(true)
+    .setNumUncollapsibleWidgets(0);
+
+  dangerSection.addWidget(CardService.newDecoratedText()
+    .setText("Supprime tous les événements Padel Sync du calendrier et réinitialise les emails.")
+    .setTopLabel("Réinitialisation complète")
+    .setIcon(CardService.Icon.DESCRIPTION)
+    .setWrapText(true)
+    .setButton(CardService.newTextButton()
+      .setText("Supprimer")
+      .setOnClickAction(CardService.newAction().setFunctionName("confirmDeleteEvents"))
+      .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+      .setBackgroundColor("#D32F2F")));
+
+  card.addSection(dangerSection);
 
   // === Footer fixe ===
   card.setFixedFooter(CardService.newFixedFooter()
@@ -113,8 +145,8 @@ function onHomepage(e) {
       .setOnClickAction(CardService.newAction().setFunctionName("triggerScanFromCard"))
       .setTextButtonStyle(CardService.TextButtonStyle.FILLED))
     .setSecondaryButton(CardService.newTextButton()
-      .setText("Configuration")
-      .setOnClickAction(CardService.newAction().setFunctionName("showConfigCard"))));
+      .setText("Historique")
+      .setOnClickAction(CardService.newAction().setFunctionName("showFullHistoryCard"))));
 
   return card.build();
 }
@@ -134,6 +166,12 @@ function showConfigCard(e) {
       .setSubtitle("Personnalisez Padel Sync")
       .setImageUrl("https://cedricleger.github.io/padelsync/logo_128.png")
       .setImageStyle(CardService.ImageStyle.CIRCLE));
+
+  // Introduction
+  var introSection = CardService.newCardSection();
+  introSection.addWidget(CardService.newTextParagraph()
+    .setText("<font color=\"#666666\">Modifiez les paramètres ci-dessous puis appuyez sur <b>Enregistrer</b>.</font>"));
+  card.addSection(introSection);
 
   var section = CardService.newCardSection()
     .setHeader("Sources d'emails");
@@ -215,13 +253,15 @@ function showConfigCard(e) {
       .setSelected(config.NOTIFY_ON_CREATE === "true"));
   scanSection.addWidget(notifySwitch);
 
-  // Bouton Sauvegarder
-  scanSection.addWidget(CardService.newTextButton()
-    .setText("Enregistrer")
-    .setOnClickAction(CardService.newAction().setFunctionName("saveConfigFromCard"))
-    .setTextButtonStyle(CardService.TextButtonStyle.FILLED));
-
   card.addSection(scanSection);
+
+  // Footer fixe avec bouton Enregistrer (toujours visible pendant le scroll)
+  card.setFixedFooter(CardService.newFixedFooter()
+    .setPrimaryButton(CardService.newTextButton()
+      .setText("Enregistrer")
+      .setOnClickAction(CardService.newAction().setFunctionName("saveConfigFromCard"))
+      .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+      .setBackgroundColor("#4CAF50")));
 
   var nav = CardService.newNavigation().pushCard(card.build());
   return CardService.newActionResponseBuilder().setNavigation(nav).build();
@@ -306,8 +346,7 @@ function confirmDeleteEvents(e) {
   section.addWidget(CardService.newDecoratedText()
     .setText("Supprime tous les événements contenant '" + PADEL_SYNC_MARKER + "' du calendrier et retire le label PadelSync de tous les emails Gmail.")
     .setWrapText(true)
-    .setStartIcon(CardService.newIconImage()
-      .setIconUrl("https://www.gstatic.com/images/icons/material/system/1x/warning_googyellow_24dp.png")));
+    .setIcon(CardService.Icon.DESCRIPTION));
 
   section.addWidget(CardService.newDecoratedText()
     .setText("Les emails seront retraités au prochain scan.")
@@ -318,7 +357,8 @@ function confirmDeleteEvents(e) {
   buttonSet.addButton(CardService.newTextButton()
     .setText("Confirmer la suppression")
     .setOnClickAction(CardService.newAction().setFunctionName("executeDeleteEvents"))
-    .setTextButtonStyle(CardService.TextButtonStyle.FILLED));
+    .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+    .setBackgroundColor("#D32F2F"));
   buttonSet.addButton(CardService.newTextButton()
     .setText("Annuler")
     .setOnClickAction(CardService.newAction().setFunctionName("cancelAction")));
@@ -382,30 +422,30 @@ function showFullHistoryCard(e) {
   if (logs.length === 0) {
     section.addWidget(CardService.newDecoratedText()
       .setText("Aucune synchronisation enregistrée.")
-      .setIcon(CardService.Icon.DESCRIPTION));
+      .setIcon(CardService.Icon.DESCRIPTION)
+      .setWrapText(true));
   } else {
     for (var i = 0; i < logs.length; i++) {
       var entry = logs[i];
-      var statusEmoji = entry.status === "Créé" ? "\uD83D\uDFE2" :
-                        entry.status === "Enrichi" ? "\uD83D\uDD35" :
-                        entry.status === "Doublon ignoré" ? "\u26AA" :
-                        entry.status.indexOf("Erreur") === 0 ? "\uD83D\uDD34" : "\uD83D\uDFE1";
-
       var label = entry.date;
       if (entry.court) label += " \u2014 " + entry.court;
       if (entry.matchDate) label += " (" + entry.matchDate + ")";
 
       section.addWidget(CardService.newDecoratedText()
-        .setText(statusEmoji + " " + entry.status)
+        .setText(entry.status)
         .setTopLabel(label)
-        .setIcon(CardService.Icon.DESCRIPTION));
+        .setStartIcon(getStatusIcon_(entry.status))
+        .setWrapText(true));
     }
   }
+
+  section.addWidget(CardService.newDivider());
 
   section.addWidget(CardService.newTextButton()
     .setText("Effacer l'historique")
     .setOnClickAction(CardService.newAction().setFunctionName("clearHistoryFromCard"))
-    .setTextButtonStyle(CardService.TextButtonStyle.TEXT));
+    .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+    .setBackgroundColor("#D32F2F"));
 
   card.addSection(section);
 
@@ -466,6 +506,11 @@ function onGmailMessage(e) {
 
   var section = CardService.newCardSection();
 
+  // Type coloré (invitation = orange, réservation = vert)
+  var typeColor = parsed.type === "invitation" ? "#FF9800" : "#4CAF50";
+  section.addWidget(CardService.newTextParagraph()
+    .setText("<font color=\"" + typeColor + "\"><b>" + capitalize_(parsed.type) + "</b></font>"));
+
   if (parsed.court) {
     section.addWidget(CardService.newDecoratedText()
       .setText(parsed.court)
@@ -491,6 +536,7 @@ function onGmailMessage(e) {
     section.addWidget(CardService.newDecoratedText()
       .setText(parsed.location)
       .setTopLabel("Lieu")
+      .setWrapText(true)
       .setIcon(CardService.Icon.MAP_PIN));
   }
 
@@ -503,6 +549,7 @@ function onGmailMessage(e) {
   }
 
   if (parsed.codes && parsed.codes.length > 0) {
+    section.addWidget(CardService.newDivider());
     section.addWidget(CardService.newDecoratedText()
       .setText(parsed.codes.join("\n"))
       .setTopLabel("Codes d'accès")
