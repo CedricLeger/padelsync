@@ -12,7 +12,7 @@
   "addOns": {
     "common": {
       "name": "Padel Sync",
-      "logoUrl": "https://TODO_REPLACE_WITH_HOSTED_LOGO_URL/logo_128.png",
+      "logoUrl": "https://cedricleger.github.io/padelsync/logo_128.png",
       "layoutProperties": {
         "primaryColor": "#4CAF50",
         "secondaryColor": "#FFFFFF"
@@ -27,7 +27,7 @@
         }
       ],
       "openLinkUrlPrefixes": [
-        "https://TODO_REPLACE_WITH_GITHUB_PAGES_URL/"
+        "https://cedricleger.github.io/padelsync/"
       ]
     },
     "gmail": {
