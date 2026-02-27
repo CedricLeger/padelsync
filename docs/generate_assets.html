@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Padel Sync — Asset Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #0a0a0a; color: #e0e0e0; padding: 40px; }
+    h1 { font-size: 28px; margin-bottom: 8px; color: #4CAF50; }
+    .subtitle { color: #888; margin-bottom: 40px; }
+    .asset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1100px; }
+    .asset-card { background: #1a1a1a; border-radius: 16px; padding: 32px; border: 1px solid #333; }
+    .asset-card h2 { font-size: 18px; margin-bottom: 4px; }
+    .asset-card .dims { color: #666; font-size: 13px; margin-bottom: 20px; }
+    .preview { background: repeating-conic-gradient(#222 0% 25%, #2a2a2a 0% 50%) 50%/16px 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 20px; margin-bottom: 20px; min-height: 180px; }
+    button { font-family: 'Montserrat', sans-serif; background: #4CAF50; color: white; border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; width: 100%; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s; }
+    button:hover { background: #43A047; }
+    button:disabled { background: #333; color: #666; cursor: wait; }
+    canvas { display: none; }
+    .status { text-align: center; margin-top: 12px; font-size: 12px; color: #4CAF50; min-height: 18px; }
+    @media (max-width: 800px) { .asset-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Padel Sync — Asset Generator</h1>
+  <p class="subtitle">Generateur d'assets pour le Google Workspace Marketplace</p>
+
+  <div class="asset-grid">
+    <!-- Logo -->
+    <div class="asset-card">
+      <h2>Logo</h2>
+      <p class="dims">128 x 128 px &middot; PNG</p>
+      <div class="preview" id="logo-preview"></div>
+      <button onclick="downloadAsset('logo')" id="btn-logo" disabled>Chargement...</button>
+      <p class="status" id="status-logo"></p>
+    </div>
+
+    <!-- Banner -->
+    <div class="asset-card">
+      <h2>Banniere Card</h2>
+      <p class="dims">400 x 88 px &middot; PNG</p>
+      <div class="preview" id="banner-preview"></div>
+      <button onclick="downloadAsset('banner')" id="btn-banner" disabled>Chargement...</button>
+      <p class="status" id="status-banner"></p>
+    </div>
+  </div>
+
+  <canvas id="c-logo" width="256" height="256"></canvas>
+  <canvas id="c-banner" width="800" height="176"></canvas>
+
+<script>
+// ============================================================
+// LOGO — Drawn via Canvas (high-res 256x256, exported 128x128)
+// ============================================================
+function drawLogo(canvas) {
+  var s = 2; // scale factor for sharpness
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 256, 256);
+
+  // Background rounded square
+  roundRect(ctx, 0, 0, 256, 256, 52);
+  var bg = ctx.createLinearGradient(0, 0, 256, 256);
+  bg.addColorStop(0, '#43A047');
+  bg.addColorStop(0.5, '#2E7D32');
+  bg.addColorStop(1, '#1B5E20');
+  ctx.fillStyle = bg;
+  ctx.fill();
+
+  // Subtle noise texture
+  ctx.globalAlpha = 0.03;
+  for (var i = 0; i < 800; i++) {
+    ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+    ctx.fillRect(Math.random()*256, Math.random()*256, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Caribbean waves
+  ctx.beginPath();
+  ctx.moveTo(0, 210*s/2);
+  ctx.bezierCurveTo(64*s/2, 190*s/2, 128*s/2, 220*s/2, 256, 210*s/2);
+  ctx.lineTo(256, 256); ctx.lineTo(0, 256); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(0, 224*s/2);
+  ctx.bezierCurveTo(64*s/2, 212*s/2, 128*s/2, 230*s/2, 256, 224*s/2);
+  ctx.lineTo(256, 256); ctx.lineTo(0, 256); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  ctx.fill();
+
+  // Padel racket
+  ctx.save();
+  ctx.translate(108, 92);
+  ctx.rotate(-12 * Math.PI / 180);
+
+  // Racket head shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.25)';
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 4;
+
+  roundRect(ctx, -48, -68, 96, 108, 40);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.fill();
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+
+  // Holes grid
+  var holes = [
+    [-20,-44],[4,-44],[28,-44],
+    [-32,-24],[-8,-24],[16,-24],[36,-24],
+    [-32,-4],[-8,-4],[16,-4],[36,-4],
+    [-32,16],[-8,16],[16,16],[36,16],
+    [-20,32],[4,32],[28,32]
+  ];
+  for (var h = 0; h < holes.length; h++) {
+    ctx.beginPath();
+    ctx.arc(holes[h][0], holes[h][1], 5, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(46,125,50,0.4)';
+    ctx.fill();
+  }
+
+  // Handle shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 3;
+
+  roundRect(ctx, -12, 40, 24, 52, 8);
+  ctx.fillStyle = 'rgba(255,255,255,0.88)';
+  ctx.fill();
+
+  ctx.shadowColor = 'transparent';
+
+  // Grip lines
+  for (var g = 0; g < 4; g++) {
+    ctx.beginPath();
+    ctx.moveTo(-5, 56 + g*8);
+    ctx.lineTo(5, 54 + g*8);
+    ctx.strokeStyle = 'rgba(46,125,50,0.2)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  ctx.restore();
+
+  // Calendar badge
+  ctx.save();
+  ctx.translate(204, 204);
+
+  // Badge shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.3)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 2;
+
+  ctx.beginPath();
+  ctx.arc(0, 0, 32, 0, Math.PI*2);
+  ctx.fillStyle = '#FDD835';
+  ctx.fill();
+
+  ctx.shadowColor = 'transparent';
+
+  ctx.beginPath();
+  ctx.arc(0, 0, 32, 0, Math.PI*2);
+  ctx.strokeStyle = '#F9A825';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Calendar body
+  roundRect(ctx, -16, -10, 32, 26, 3);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+
+  // Calendar header
+  roundRect(ctx, -16, -10, 32, 9, 3);
+  ctx.fillStyle = '#2E7D32';
+  ctx.fill();
+  ctx.fillRect(-16, -5, 32, 4);
+
+  // Pins
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1B5E20';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(-7, -14); ctx.lineTo(-7, -8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(7, -14); ctx.lineTo(7, -8); ctx.stroke();
+
+  // Checkmark
+  ctx.beginPath();
+  ctx.moveTo(-7, 6);
+  ctx.lineTo(-2, 11);
+  ctx.lineTo(9, 0);
+  ctx.strokeStyle = '#2E7D32';
+  ctx.lineWidth = 4;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+// ============================================================
+// BANNER — Rich tropical header for Card Service
+// ============================================================
+function drawBanner(canvas) {
+  var ctx = canvas.getContext('2d');
+  var w = 800, h = 176;
+  ctx.clearRect(0, 0, w, h);
+
+  // Background gradient — deep tropical
+  var bg = ctx.createLinearGradient(0, 0, w, h);
+  bg.addColorStop(0, '#1B5E20');
+  bg.addColorStop(0.4, '#2E7D32');
+  bg.addColorStop(1, '#00695C');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle noise
+  ctx.globalAlpha = 0.025;
+  for (var i = 0; i < 600; i++) {
+    ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+    ctx.fillRect(Math.random()*w, Math.random()*h, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Decorative circle (top-right, large, subtle)
+  ctx.beginPath();
+  ctx.arc(w + 20, -30, 140, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fill();
+
+  // Another circle (bottom-left)
+  ctx.beginPath();
+  ctx.arc(-40, h + 30, 100, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  ctx.fill();
+
+  // Wave pattern
+  ctx.beginPath();
+  ctx.moveTo(0, h * 0.7);
+  ctx.bezierCurveTo(w*0.2, h*0.55, w*0.5, h*0.85, w, h*0.65);
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(0, h * 0.82);
+  ctx.bezierCurveTo(w*0.3, h*0.72, w*0.7, h*0.92, w, h*0.8);
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  ctx.fill();
+
+  // Gold accent line (top)
+  var gold = ctx.createLinearGradient(0, 0, w, 0);
+  gold.addColorStop(0, '#FDD835');
+  gold.addColorStop(0.5, '#FFE082');
+  gold.addColorStop(1, '#FDD835');
+  ctx.fillStyle = gold;
+  ctx.fillRect(0, 0, w, 4);
+
+  // Small padel racket silhouette (left side, decorative)
+  ctx.save();
+  ctx.globalAlpha = 0.08;
+  ctx.translate(80, h/2 + 10);
+  ctx.rotate(-25 * Math.PI / 180);
+  ctx.scale(1.2, 1.2);
+  roundRect(ctx, -24, -34, 48, 54, 20);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  roundRect(ctx, -6, 20, 12, 26, 4);
+  ctx.fill();
+  ctx.restore();
+
+  // "PADEL SYNC" text
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Text shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 3;
+
+  ctx.font = '900 52px Montserrat, sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+
+  // Letter spacing via manual positioning
+  var text = 'PADEL SYNC';
+  var x = w/2;
+  var y = h/2 - 14;
+  ctx.fillText(text, x, y);
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+
+  // Subtitle
+  ctx.font = '400 18px Montserrat, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.fillText('Synchronisez vos matchs automatiquement', x, y + 38);
+
+  // Small version badge (right side)
+  ctx.font = '700 11px Montserrat, sans-serif';
+  var badgeText = 'v2.0';
+  var badgeW = ctx.measureText(badgeText).width + 16;
+  var badgeX = w - badgeW/2 - 16;
+  var badgeY = 18;
+
+  roundRect(ctx, badgeX - badgeW/2, badgeY - 8, badgeW, 16, 8);
+  ctx.fillStyle = 'rgba(253,216,53,0.25)';
+  ctx.fill();
+  ctx.fillStyle = '#FDD835';
+  ctx.textAlign = 'center';
+  ctx.fillText(badgeText, badgeX, badgeY + 1);
+
+  // Gold accent line (bottom)
+  ctx.fillStyle = gold;
+  ctx.fillRect(0, h - 3, w, 3);
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function downloadAsset(type) {
+  var canvas, filename, targetW, targetH;
+  if (type === 'logo') {
+    canvas = document.getElementById('c-logo');
+    filename = 'logo_128.png';
+    targetW = 128; targetH = 128;
+  } else {
+    canvas = document.getElementById('c-banner');
+    filename = 'banner_card.png';
+    targetW = 400; targetH = 88;
+  }
+
+  // Create a downscaled canvas for export
+  var exportCanvas = document.createElement('canvas');
+  exportCanvas.width = targetW;
+  exportCanvas.height = targetH;
+  var ectx = exportCanvas.getContext('2d');
+  ectx.drawImage(canvas, 0, 0, targetW, targetH);
+
+  var link = document.createElement('a');
+  link.download = filename;
+  link.href = exportCanvas.toDataURL('image/png');
+  link.click();
+
+  document.getElementById('status-' + type).textContent = filename + ' telecharge !';
+}
+
+// ============================================================
+// INIT — Wait for fonts then render
+// ============================================================
+document.fonts.ready.then(function() {
+  // Draw logo
+  var logoCanvas = document.getElementById('c-logo');
+  drawLogo(logoCanvas);
+  var logoPreview = document.getElementById('logo-preview');
+  var logoImg = document.createElement('img');
+  logoImg.src = logoCanvas.toDataURL('image/png');
+  logoImg.width = 128; logoImg.height = 128;
+  logoImg.style.borderRadius = '20px';
+  logoPreview.appendChild(logoImg);
+  document.getElementById('btn-logo').disabled = false;
+  document.getElementById('btn-logo').textContent = 'Telecharger logo_128.png';
+
+  // Draw banner
+  var bannerCanvas = document.getElementById('c-banner');
+  drawBanner(bannerCanvas);
+  var bannerPreview = document.getElementById('banner-preview');
+  var bannerImg = document.createElement('img');
+  bannerImg.src = bannerCanvas.toDataURL('image/png');
+  bannerImg.width = 400; bannerImg.height = 88;
+  bannerImg.style.borderRadius = '8px';
+  bannerPreview.appendChild(bannerImg);
+  document.getElementById('btn-banner').disabled = false;
+  document.getElementById('btn-banner').textContent = 'Telecharger banner_card.png';
+});
+</script>
+</body>
+</html>

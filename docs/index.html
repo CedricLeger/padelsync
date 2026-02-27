@@ -4,72 +4,482 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Padel Sync — Synchronisez vos matchs automatiquement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --emerald-deep: #0D3B1E;
+      --emerald: #1B5E20;
+      --green: #2E7D32;
+      --green-light: #43A047;
+      --teal: #00695C;
+      --gold: #FDD835;
+      --gold-dark: #F9A825;
+      --cream: #FAFDF7;
+      --text: #1a2e1a;
+      --text-light: #4a6a4a;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-    .hero { background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); color: white; text-align: center; padding: 80px 20px; }
-    .hero h1 { font-size: 48px; margin-bottom: 16px; }
-    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; }
-    .hero .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
-    .content { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
-    h2 { color: #333; margin-bottom: 24px; text-align: center; }
-    .features { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 40px 0; }
-    .feature { background: #f8f8f8; padding: 24px; border-radius: 12px; }
-    .feature h3 { color: #4CAF50; margin-bottom: 8px; }
-    .providers { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 24px 0; }
-    .provider { background: #f0f7f0; padding: 12px 24px; border-radius: 8px; font-weight: 500; }
-    .links { text-align: center; margin: 48px 0; }
-    .links a { display: inline-block; margin: 8px 16px; color: #4CAF50; text-decoration: none; font-size: 16px; }
-    .links a:hover { text-decoration: underline; }
-    footer { text-align: center; padding: 32px 20px; border-top: 1px solid #eee; font-size: 14px; color: #666; }
-    @media (max-width: 600px) { .features { grid-template-columns: 1fr; } .hero h1 { font-size: 32px; } }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ====== HERO ====== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald) 30%, var(--teal) 100%);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 80vw;
+      height: 80vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(253,216,53,0.08) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -15%;
+      width: 60vw;
+      height: 60vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(67,160,71,0.12) 0%, transparent 60%);
+      animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -40px) scale(1.05); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      padding: 40px 24px;
+    }
+
+    .hero-logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: fadeUp 0.8s ease-out;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 700;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      animation: fadeUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero p {
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.8);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      animation: fadeUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      animation: fadeUp 0.8s ease-out 0.3s both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--gold);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Wave divider */
+    .wave {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      z-index: 3;
+    }
+
+    .wave svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ====== PROVIDERS ====== */
+    .providers {
+      padding: 80px 24px 60px;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--green-light);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 40px);
+      color: var(--emerald-deep);
+      margin-bottom: 40px;
+    }
+
+    .provider-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .provider-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--emerald);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid rgba(46,125,50,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .provider-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .provider-chip::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green-light);
+    }
+
+    /* ====== FEATURES ====== */
+    .features {
+      padding: 40px 24px 100px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features .section-label,
+    .features .section-title {
+      text-align: center;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 32px;
+      border: 1px solid rgba(46,125,50,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green-light), var(--teal));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(67,160,71,0.12), rgba(0,105,92,0.08));
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--emerald-deep);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* ====== HOW IT WORKS ====== */
+    .how-it-works {
+      background: linear-gradient(180deg, var(--cream) 0%, white 100%);
+      padding: 80px 24px;
+    }
+
+    .how-it-works .section-label,
+    .how-it-works .section-title {
+      text-align: center;
+    }
+
+    .steps {
+      display: flex;
+      gap: 32px;
+      max-width: 900px;
+      margin: 48px auto 0;
+      justify-content: center;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      max-width: 260px;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-light), var(--teal));
+      color: white;
+      font-weight: 800;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      box-shadow: 0 8px 24px rgba(46,125,50,0.25);
+    }
+
+    .step h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--emerald-deep);
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    /* ====== FOOTER ====== */
+    footer {
+      background: var(--emerald-deep);
+      color: rgba(255,255,255,0.6);
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    .footer-brand {
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 4px;
+    }
+
+    .footer-contact {
+      font-size: 13px;
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 700px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .steps { flex-direction: column; align-items: center; }
+      .hero { min-height: 90vh; }
+    }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>Padel Sync</h1>
-    <p>Synchronisez automatiquement vos réservations et invitations de padel dans Google Calendar.</p>
-    <span class="badge">Add-on Google Workspace gratuit</span>
-  </div>
 
-  <div class="content">
-    <h2>Fournisseurs supportés</h2>
-    <div class="providers">
-      <span class="provider">Arena</span>
-      <span class="provider">TenUp / FFT</span>
-      <span class="provider">DoInSport</span>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <img src="logo_128.png" alt="Padel Sync" class="hero-logo">
+      <h1>Vos matchs de padel, <em>automatiquement</em> dans votre agenda</h1>
+      <p>Padel Sync lit vos emails de r&eacute;servation et cr&eacute;e les &eacute;v&eacute;nements dans Google Calendar. Z&eacute;ro effort, z&eacute;ro oubli.</p>
+      <span class="hero-badge">Add-on Google Workspace gratuit</span>
     </div>
+    <div class="wave">
+      <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 60 C360 120 720 0 1080 60 S1440 80 1440 80 L1440 120 L0 120Z" fill="#FAFDF7"/>
+      </svg>
+    </div>
+  </section>
 
-    <h2>Fonctionnalités</h2>
-    <div class="features">
-      <div class="feature">
+  <!-- PROVIDERS -->
+  <section class="providers">
+    <p class="section-label">Compatible</p>
+    <h2 class="section-title">Fournisseurs support&eacute;s</h2>
+    <div class="provider-grid">
+      <div class="provider-chip">Arena</div>
+      <div class="provider-chip">TenUp / FFT</div>
+      <div class="provider-chip">DoInSport</div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">Fonctionnalit&eacute;s</p>
+    <h2 class="section-title">Tout ce qu'il faut, rien de plus</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#9201;</div>
         <h3>Scan automatique</h3>
-        <p>Vérifie vos emails toutes les 5 minutes et crée les événements automatiquement.</p>
+        <p>V&eacute;rifie vos emails toutes les 5 minutes et cr&eacute;e les &eacute;v&eacute;nements dans votre calendrier sans intervention.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
+        <div class="feature-icon">&#127934;</div>
         <h3>Multi-fournisseurs</h3>
-        <p>Supporte Arena, TenUp/FFT et DoInSport. Ajoutez d'autres fournisseurs facilement.</p>
+        <p>Arena, TenUp/FFT, DoInSport &mdash; et vous pouvez ajouter vos propres sources en un clic.</p>
       </div>
-      <div class="feature">
-        <h3>Détection intelligente</h3>
-        <p>Reconnaît invitations et réservations, extrait terrain, lieu, horaires et codes d'accès.</p>
+      <div class="feature-card">
+        <div class="feature-icon">&#128269;</div>
+        <h3>D&eacute;tection intelligente</h3>
+        <p>Reconna&icirc;t r&eacute;servations et invitations, extrait terrain, lieu, horaires et codes d'acc&egrave;s.</p>
       </div>
-      <div class="feature">
-        <h3>Zéro configuration serveur</h3>
-        <p>Fonctionne entièrement dans votre compte Google. Aucun serveur externe, aucune donnée partagée.</p>
+      <div class="feature-card">
+        <div class="feature-icon">&#128274;</div>
+        <h3>100% priv&eacute;</h3>
+        <p>Aucun serveur externe. Tout reste dans votre compte Google. Z&eacute;ro donn&eacute;es partag&eacute;es.</p>
       </div>
     </div>
+  </section>
 
-    <div class="links">
-      <a href="support.html">Support / FAQ</a>
-      <a href="privacy-policy.html">Politique de confidentialité</a>
-      <a href="terms-of-service.html">Conditions d'utilisation</a>
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <p class="section-label">Simple</p>
+    <h2 class="section-title">Comment &ccedil;a marche</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Installez l'add-on</h4>
+        <p>Depuis le Google Workspace Marketplace, en un clic.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Configurez vos sources</h4>
+        <p>Ajoutez les exp&eacute;diteurs de vos r&eacute;servations padel.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>C'est tout</h4>
+        <p>Vos matchs apparaissent automatiquement dans Google Calendar.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
+  <!-- FOOTER -->
   <footer>
-    <p>Padel Sync — Projet open source</p>
-    <p>Contact : padelsync@proton.me</p>
+    <div class="footer-links">
+      <a href="support.html">Support / FAQ</a>
+      <a href="privacy-policy.html">Confidentialit&eacute;</a>
+      <a href="terms-of-service.html">Conditions</a>
+    </div>
+    <p class="footer-brand">Padel Sync</p>
+    <p class="footer-contact">padelsync@proton.me</p>
   </footer>
+
 </body>
 </html>

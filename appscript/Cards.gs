@@ -21,6 +21,13 @@ function onHomepage(e) {
       .setImageUrl("https://cedricleger.github.io/padelsync/logo_128.png")
       .setImageStyle(CardService.ImageStyle.CIRCLE));
 
+  // === Bannière visuelle ===
+  var bannerSection = CardService.newCardSection();
+  bannerSection.addWidget(CardService.newImage()
+    .setImageUrl("https://cedricleger.github.io/padelsync/banner_card.png")
+    .setAltText("Padel Sync \u2014 Synchronisez vos matchs"));
+  card.addSection(bannerSection);
+
   // === Section Statut ===
   var statusSection = CardService.newCardSection()
     .setHeader("Statut");
@@ -98,6 +105,16 @@ function onHomepage(e) {
 
     card.addSection(historySection);
   }
+
+  // === Footer fixe ===
+  card.setFixedFooter(CardService.newFixedFooter()
+    .setPrimaryButton(CardService.newTextButton()
+      .setText("Scanner maintenant")
+      .setOnClickAction(CardService.newAction().setFunctionName("triggerScanFromCard"))
+      .setTextButtonStyle(CardService.TextButtonStyle.FILLED))
+    .setSecondaryButton(CardService.newTextButton()
+      .setText("Configuration")
+      .setOnClickAction(CardService.newAction().setFunctionName("showConfigCard"))));
 
   return card.build();
 }
