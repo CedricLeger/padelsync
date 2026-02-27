@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Padel Sync — Logo Generator</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 40px; background: #f5f5f5; }
+    h1 { color: #333; margin-bottom: 8px; }
+    p { color: #666; margin-bottom: 32px; }
+    .preview { display: inline-block; background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; }
+    .preview img { display: block; }
+    .sizes { display: flex; gap: 32px; justify-content: center; align-items: flex-end; margin-bottom: 32px; }
+    .size-item { text-align: center; }
+    .size-item span { display: block; font-size: 12px; color: #999; margin-top: 8px; }
+    canvas { display: none; }
+    button { background: #4CAF50; color: white; border: none; padding: 12px 32px; font-size: 16px; border-radius: 8px; cursor: pointer; margin: 8px; }
+    button:hover { background: #43A047; }
+    .info { margin-top: 24px; font-size: 14px; color: #666; max-width: 500px; margin-left: auto; margin-right: auto; }
+  </style>
+</head>
+<body>
+  <h1>Padel Sync — Logo Generator</h1>
+  <p>Convertit le logo SVG en PNG pour le Google Workspace Marketplace</p>
+
+  <div class="sizes" id="previews"></div>
+
+  <canvas id="canvas128" width="128" height="128"></canvas>
+
+  <div>
+    <button onclick="downloadPNG(128)">Telecharger PNG 128x128</button>
+  </div>
+
+  <div class="info">
+    <p><strong>Instructions :</strong></p>
+    <ol style="text-align: left;">
+      <li>Cliquez sur "Telecharger PNG 128x128"</li>
+      <li>Sauvegardez le fichier comme <code>logo_128.png</code></li>
+      <li>Placez-le dans le dossier <code>docs/</code> du projet</li>
+      <li>Committez et poussez vers GitHub</li>
+      <li>Le logo sera disponible sur <code>https://cedricleger.github.io/padelsync/logo_128.png</code></li>
+    </ol>
+  </div>
+
+  <script>
+    // Inline SVG to avoid CORS issues when opening from filesystem
+    var svgString = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">' +
+      '<defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">' +
+      '<stop offset="0%" stop-color="#43A047"/><stop offset="100%" stop-color="#1B5E20"/>' +
+      '</linearGradient></defs>' +
+      '<rect width="128" height="128" rx="26" fill="url(#bg)"/>' +
+      '<path d="M0 106 Q32 96 64 106 T128 106 V128 H0Z" fill="rgba(255,255,255,0.06)"/>' +
+      '<path d="M0 114 Q32 106 64 114 T128 114 V128 H0Z" fill="rgba(255,255,255,0.04)"/>' +
+      '<g transform="translate(54 46) rotate(-12)">' +
+      '<rect x="-24" y="-34" width="48" height="54" rx="20" fill="white" fill-opacity="0.95"/>' +
+      '<circle cx="-10" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="2" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="14" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-16" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-4" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="8" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="18" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-16" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-4" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="8" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="18" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-16" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-4" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="8" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="18" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="-10" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="2" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<circle cx="14" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>' +
+      '<rect x="-6" y="20" width="12" height="26" rx="4" fill="white" fill-opacity="0.88"/>' +
+      '<line x1="-2.5" y1="28" x2="2.5" y2="27" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>' +
+      '<line x1="-2.5" y1="32" x2="2.5" y2="31" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>' +
+      '<line x1="-2.5" y1="36" x2="2.5" y2="35" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>' +
+      '<line x1="-2.5" y1="40" x2="2.5" y2="39" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>' +
+      '</g>' +
+      '<g transform="translate(102 102)">' +
+      '<circle r="16" fill="#FDD835"/>' +
+      '<circle r="16" fill="none" stroke="#F9A825" stroke-width="0.8"/>' +
+      '<rect x="-8" y="-5" width="16" height="13" rx="1.5" fill="white"/>' +
+      '<rect x="-8" y="-5" width="16" height="4.5" rx="1.5" fill="#2E7D32"/>' +
+      '<rect x="-8" y="-2.5" width="16" height="2" fill="#2E7D32"/>' +
+      '<line x1="-3.5" y1="-7" x2="-3.5" y2="-4" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<line x1="3.5" y1="-7" x2="3.5" y2="-4" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<polyline points="-3.5,3 -1,5.5 4.5,0" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</g></svg>';
+
+    function renderSVG(size) {
+      return new Promise(function(resolve) {
+        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+        var url = URL.createObjectURL(blob);
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, size, size);
+          URL.revokeObjectURL(url);
+          resolve({canvas: canvas, img: img});
+        };
+        img.src = url;
+      });
+    }
+
+    // Render previews at different sizes
+    Promise.all([renderSVG(128), renderSVG(64), renderSVG(32)]).then(function(results) {
+      var container = document.getElementById('previews');
+      var sizes = [128, 64, 32];
+      var labels = ['128x128 (Marketplace)', '64x64 (Sidebar)', '32x32 (Favicon)'];
+
+      results.forEach(function(result, i) {
+        var div = document.createElement('div');
+        div.className = 'size-item preview';
+        var img = document.createElement('img');
+        img.src = result.canvas.toDataURL('image/png');
+        img.width = sizes[i];
+        img.height = sizes[i];
+        img.style.imageRendering = 'auto';
+        div.appendChild(img);
+        var span = document.createElement('span');
+        span.textContent = labels[i];
+        div.appendChild(span);
+        container.appendChild(div);
+      });
+
+      // Store the 128x128 canvas for download
+      window._canvas128 = results[0].canvas;
+    });
+
+    function downloadPNG(size) {
+      if (!window._canvas128) {
+        alert('Logo en cours de generation, reessayez dans un instant.');
+        return;
+      }
+      var link = document.createElement('a');
+      link.download = 'logo_128.png';
+      link.href = window._canvas128.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

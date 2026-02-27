@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#43A047"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="128" height="128" rx="26" fill="url(#bg)"/>
+
+  <!-- Subtle Caribbean waves -->
+  <path d="M0 106 Q32 96 64 106 T128 106 V128 H0Z" fill="rgba(255,255,255,0.06)"/>
+  <path d="M0 114 Q32 106 64 114 T128 114 V128 H0Z" fill="rgba(255,255,255,0.04)"/>
+
+  <!-- Padel racket (slightly tilted for dynamism) -->
+  <g transform="translate(54 46) rotate(-12)">
+    <!-- Racket head -->
+    <rect x="-24" y="-34" width="48" height="54" rx="20" fill="white" fill-opacity="0.95"/>
+
+    <!-- Holes - offset grid pattern (characteristic of padel rackets) -->
+    <!-- Row 1 (3 holes) -->
+    <circle cx="-10" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="2" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="14" cy="-22" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <!-- Row 2 (4 holes) -->
+    <circle cx="-16" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="-4" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="8" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="18" cy="-12" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <!-- Row 3 (4 holes) -->
+    <circle cx="-16" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="-4" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="8" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="18" cy="-2" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <!-- Row 4 (4 holes) -->
+    <circle cx="-16" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="-4" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="8" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="18" cy="8" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <!-- Row 5 (3 holes) -->
+    <circle cx="-10" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="2" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>
+    <circle cx="14" cy="16" r="2.5" fill="#2E7D32" opacity="0.4"/>
+
+    <!-- Handle -->
+    <rect x="-6" y="20" width="12" height="26" rx="4" fill="white" fill-opacity="0.88"/>
+    <!-- Grip texture -->
+    <line x1="-2.5" y1="28" x2="2.5" y2="27" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>
+    <line x1="-2.5" y1="32" x2="2.5" y2="31" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>
+    <line x1="-2.5" y1="36" x2="2.5" y2="35" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>
+    <line x1="-2.5" y1="40" x2="2.5" y2="39" stroke="#2E7D32" stroke-width="0.8" opacity="0.25"/>
+  </g>
+
+  <!-- Calendar sync badge (bottom-right corner) -->
+  <g transform="translate(102 102)">
+    <circle r="16" fill="#FDD835"/>
+    <circle r="16" fill="none" stroke="#F9A825" stroke-width="0.8"/>
+    <!-- Calendar body -->
+    <rect x="-8" y="-5" width="16" height="13" rx="1.5" fill="white"/>
+    <!-- Calendar header bar -->
+    <rect x="-8" y="-5" width="16" height="4.5" rx="1.5" fill="#2E7D32"/>
+    <rect x="-8" y="-2.5" width="16" height="2" fill="#2E7D32"/>
+    <!-- Calendar pins -->
+    <line x1="-3.5" y1="-7" x2="-3.5" y2="-4" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="3.5" y1="-7" x2="3.5" y2="-4" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Checkmark (sync complete) -->
+    <polyline points="-3.5,3 -1,5.5 4.5,0" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
