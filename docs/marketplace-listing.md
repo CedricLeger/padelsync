@@ -20,7 +20,7 @@ Padel Sync synchronise automatiquement vos emails de réservation et d'invitatio
 - DoInSport (réservations)
 
 **Fonctionnalités :**
-- Scan automatique des emails (intervalle configurable : 1 à 30 min)
+- Scan automatique des emails (intervalle configurable : 1 à 12h)
 - Détection intelligente des réservations et invitations
 - Extraction automatique : date, heure, terrain, lieu, codes d'accès
 - Détection de doublons et enrichissement des événements existants

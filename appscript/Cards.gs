@@ -59,7 +59,7 @@ function onHomepage(e) {
 
   var scanWidget = CardService.newDecoratedText()
     .setText(health.trigger
-      ? "Actif \u2014 toutes les " + config.SCAN_INTERVAL_MINUTES + " min"
+      ? "Actif \u2014 toutes les " + config.SCAN_INTERVAL_HOURS + "h"
       : "Inactif \u2014 configurez l'add-on")
     .setTopLabel("Scan automatique")
     .setWrapText(true);
@@ -234,13 +234,14 @@ function showConfigCard(e) {
 
   var scanDropdown = CardService.newSelectionInput()
     .setType(CardService.SelectionInputType.DROPDOWN)
-    .setFieldName("SCAN_INTERVAL_MINUTES")
+    .setFieldName("SCAN_INTERVAL_HOURS")
     .setTitle("Intervalle de scan")
-    .addItem("1 minute", "1", config.SCAN_INTERVAL_MINUTES === "1")
-    .addItem("5 minutes (recommandé)", "5", config.SCAN_INTERVAL_MINUTES === "5")
-    .addItem("10 minutes", "10", config.SCAN_INTERVAL_MINUTES === "10")
-    .addItem("15 minutes", "15", config.SCAN_INTERVAL_MINUTES === "15")
-    .addItem("30 minutes", "30", config.SCAN_INTERVAL_MINUTES === "30");
+    .addItem("1 heure (recommandé)", "1", config.SCAN_INTERVAL_HOURS === "1")
+    .addItem("2 heures", "2", config.SCAN_INTERVAL_HOURS === "2")
+    .addItem("4 heures", "4", config.SCAN_INTERVAL_HOURS === "4")
+    .addItem("6 heures", "6", config.SCAN_INTERVAL_HOURS === "6")
+    .addItem("8 heures", "8", config.SCAN_INTERVAL_HOURS === "8")
+    .addItem("12 heures", "12", config.SCAN_INTERVAL_HOURS === "12");
   scanSection.addWidget(scanDropdown);
 
   // Notification email
@@ -277,7 +278,7 @@ function saveConfigFromCard(e) {
   var newConfig = {};
 
   var fields = ["ARENA_SENDERS", "MATCH_DURATION_MINUTES", "TIMEZONE", "CALENDAR_ID",
-                "MAX_EMAILS", "SCAN_INTERVAL_MINUTES", "REMINDER_MINUTES"];
+                "MAX_EMAILS", "SCAN_INTERVAL_HOURS", "REMINDER_MINUTES"];
 
   for (var i = 0; i < fields.length; i++) {
     var key = fields[i];

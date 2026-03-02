@@ -20,7 +20,7 @@ var DEFAULT_CONFIG = {
   LABEL_NAME: "PadelSync",
   NOTIFY_ON_CREATE: "false",
   MAX_EMAILS: "20",
-  SCAN_INTERVAL_MINUTES: "5",
+  SCAN_INTERVAL_HOURS: "1",
   REMINDER_MINUTES: "60"
 };
 
@@ -32,7 +32,7 @@ var CONFIG_VALIDATORS = {
   TIMEZONE: function(v) { return typeof v === "string" && /^[A-Za-z_]+(?:\/[A-Za-z_]+){1,2}$/.test(v); },
   CALENDAR_ID: function(v) { return v === "primary" || (typeof v === "string" && /^[\w.@-]+$/.test(v) && v.length < 200); },
   MAX_EMAILS: function(v) { var n = parseInt(v, 10); return !isNaN(n) && n >= 0 && n <= 500; },
-  SCAN_INTERVAL_MINUTES: function(v) { return [1, 5, 10, 15, 30].indexOf(parseInt(v, 10)) !== -1; },
+  SCAN_INTERVAL_HOURS: function(v) { return [1, 2, 4, 6, 8, 12].indexOf(parseInt(v, 10)) !== -1; },
   REMINDER_MINUTES: function(v) { return [0, 60, 120, 240, 480, 1440].indexOf(parseInt(v, 10)) !== -1; },
   NOTIFY_ON_CREATE: function(v) { return v === "true" || v === "false"; }
 };
@@ -71,7 +71,7 @@ function getCalendar_(config) {
  */
 function saveConfig(newConfig) {
   var props = PropertiesService.getUserProperties();
-  var oldInterval = props.getProperty("SCAN_INTERVAL_MINUTES") || DEFAULT_CONFIG.SCAN_INTERVAL_MINUTES;
+  var oldInterval = props.getProperty("SCAN_INTERVAL_HOURS") || DEFAULT_CONFIG.SCAN_INTERVAL_HOURS;
 
   for (var key in newConfig) {
     if (!CONFIG_VALIDATORS.hasOwnProperty(key)) {
@@ -85,9 +85,15 @@ function saveConfig(newConfig) {
     props.setProperty(key, newConfig[key]);
   }
 
-  // Si l'intervalle a changé, recréer le trigger automatiquement
-  if (newConfig.SCAN_INTERVAL_MINUTES && newConfig.SCAN_INTERVAL_MINUTES !== oldInterval) {
-    recreateTrigger_(parseInt(newConfig.SCAN_INTERVAL_MINUTES, 10));
+  // Recréer le trigger si l'intervalle a changé OU si aucun trigger n'existe
+  var intervalChanged = newConfig.SCAN_INTERVAL_HOURS && newConfig.SCAN_INTERVAL_HOURS !== oldInterval;
+  var triggerExists = ScriptApp.getProjectTriggers().some(function(t) {
+    return t.getHandlerFunction() === "checkPadelEmails";
+  });
+
+  if (intervalChanged || !triggerExists) {
+    var interval = parseInt(newConfig.SCAN_INTERVAL_HOURS || oldInterval, 10);
+    recreateTrigger_(interval);
   }
 
   Logger.log("Configuration sauvegardée.");

@@ -37,7 +37,7 @@ function onInstall(e) {
   }
 
   // Créer le trigger de scan
-  var interval = parseInt(config.SCAN_INTERVAL_MINUTES, 10) || 5;
+  var interval = parseInt(config.SCAN_INTERVAL_HOURS, 10) || 1;
   recreateTrigger_(interval);
 
   Logger.log("=== Installation terminée pour " + Session.getActiveUser().getEmail() + " ===");
@@ -47,9 +47,9 @@ function onInstall(e) {
  * Supprime les anciens triggers checkPadelEmails et en crée un nouveau.
  * Dans un add-on publié, getProjectTriggers() retourne uniquement
  * les triggers de l'utilisateur courant.
- * @param {number} intervalMinutes - Intervalle en minutes (1, 5, 10, 15 ou 30).
+ * @param {number} intervalHours - Intervalle en heures (1, 2, 4, 6, 8 ou 12).
  */
-function recreateTrigger_(intervalMinutes) {
+function recreateTrigger_(intervalHours) {
   var triggers = ScriptApp.getProjectTriggers();
   for (var i = 0; i < triggers.length; i++) {
     if (triggers[i].getHandlerFunction() === "checkPadelEmails") {
@@ -57,17 +57,17 @@ function recreateTrigger_(intervalMinutes) {
     }
   }
 
-  var valid = [1, 5, 10, 15, 30];
-  if (valid.indexOf(intervalMinutes) === -1) {
-    intervalMinutes = 5;
+  var valid = [1, 2, 4, 6, 8, 12];
+  if (valid.indexOf(intervalHours) === -1) {
+    intervalHours = 1;
   }
 
   ScriptApp.newTrigger("checkPadelEmails")
     .timeBased()
-    .everyMinutes(intervalMinutes)
+    .everyHours(intervalHours)
     .create();
 
-  Logger.log("Trigger créé : checkPadelEmails() toutes les " + intervalMinutes + " min.");
+  Logger.log("Trigger créé : checkPadelEmails() toutes les " + intervalHours + "h.");
 }
 
 // ===== ORCHESTRATION PRINCIPALE =================================================
