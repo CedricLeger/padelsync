@@ -36,14 +36,21 @@ function onHomepage(e) {
   var config = getConfig();
   var health = healthCheck_();
 
-  // Header dynamique avec dernière synchro
+  // Header dynamique avec dernier scan
   var subtitleText;
   if (!health.trigger) {
     subtitleText = "Configuration requise";
-  } else if (health.lastSync) {
-    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Synchro " + health.lastSync;
+  } else if (health.lastScanTime) {
+    var agoMs = new Date().getTime() - health.lastScanTime.getTime();
+    var agoMin = Math.round(agoMs / 60000);
+    var agoText;
+    if (agoMin < 1) agoText = "\u00e0 l'instant";
+    else if (agoMin < 60) agoText = "il y a " + agoMin + " min";
+    else if (agoMin < 1440) agoText = "il y a " + Math.round(agoMin / 60) + "h";
+    else agoText = "il y a " + Math.round(agoMin / 1440) + "j";
+    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Scan " + agoText;
   } else {
-    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Sync active";
+    subtitleText = "v" + PADEL_SYNC_VERSION + " \u2014 Aucun scan encore";
   }
 
   var card = CardService.newCardBuilder()
@@ -73,6 +80,33 @@ function onHomepage(e) {
   }
 
   statusSection.addWidget(scanWidget);
+
+  // Dernier scan
+  if (health.lastScanTime) {
+    var lastScanFormatted = Utilities.formatDate(health.lastScanTime, config.TIMEZONE, "dd/MM HH:mm");
+    var summaryText = lastScanFormatted + " \u2014 " + (health.lastScanSummary || "?");
+    statusSection.addWidget(CardService.newDecoratedText()
+      .setText(summaryText)
+      .setTopLabel("Dernier scan")
+      .setIcon(CardService.Icon.CLOCK)
+      .setWrapText(true));
+  }
+
+  // Prochain scan
+  if (health.nextScanApprox) {
+    var now = new Date();
+    var nextText;
+    if (health.nextScanApprox.getTime() <= now.getTime()) {
+      nextText = "Imminent";
+    } else {
+      nextText = Utilities.formatDate(health.nextScanApprox, config.TIMEZONE, "dd/MM HH:mm") + " (approx.)";
+    }
+    statusSection.addWidget(CardService.newDecoratedText()
+      .setText(nextText)
+      .setTopLabel("Prochain scan")
+      .setIcon(CardService.Icon.CLOCK)
+      .setWrapText(true));
+  }
 
   var calendarText = health.calendar || health.calendarError || "Non configuré";
   var calWidget = CardService.newDecoratedText()
@@ -291,10 +325,17 @@ function saveConfigFromCard(e) {
   // Le switch retourne la valeur si activé, undefined sinon
   newConfig.NOTIFY_ON_CREATE = inputs.NOTIFY_ON_CREATE ? "true" : "false";
 
-  saveConfig(newConfig);
+  var invalidKeys = saveConfig(newConfig);
+
+  var notificationText;
+  if (invalidKeys.length > 0) {
+    notificationText = "Valeurs invalides : " + invalidKeys.join(", ") + " (non modifiées)";
+  } else {
+    notificationText = "Configuration sauvegardée \u2714";
+  }
 
   var notification = CardService.newNotification()
-    .setText("Configuration sauvegardée \u2714");
+    .setText(notificationText);
 
   // Reconstruire la homepage pour refléter les changements
   var nav = CardService.newNavigation()

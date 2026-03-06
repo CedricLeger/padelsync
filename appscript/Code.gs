@@ -199,6 +199,23 @@ function checkPadelEmails() {
     } while (threads.length === fetchSize && (maxEmails === 0 || processedThreads < maxEmails) && !timedOut);
   }
 
+  // Sauvegarder le timestamp et résumé du scan (même si 0 emails trouvés)
+  var scanSummary;
+  if (totalFound === 0) {
+    scanSummary = "Aucun nouvel email";
+  } else {
+    var parts = [];
+    if (totalCreated > 0) parts.push(totalCreated + " créé(s)");
+    if (totalEnriched > 0) parts.push(totalEnriched + " enrichi(s)");
+    if (totalDuplicates > 0) parts.push(totalDuplicates + " doublon(s)");
+    if (totalErrors > 0) parts.push(totalErrors + " erreur(s)");
+    scanSummary = totalFound + " email(s) — " + parts.join(", ");
+  }
+
+  var scanProps = PropertiesService.getUserProperties();
+  scanProps.setProperty("LAST_SCAN_TIME", new Date().toISOString());
+  scanProps.setProperty("LAST_SCAN_SUMMARY", scanSummary);
+
   if (totalFound > 0) {
     Logger.log("Sync: " + totalFound + " email(s), " + totalCreated + " créé(s), " +
       totalEnriched + " enrichi(s), " + totalDuplicates + " doublon(s), " + totalErrors + " erreur(s).");
@@ -229,7 +246,10 @@ function healthCheck_() {
     label: false,
     calendar: null,
     calendarError: null,
-    lastSync: null
+    lastSync: null,
+    lastScanTime: null,
+    lastScanSummary: null,
+    nextScanApprox: null
   };
 
   // 1. Vérifier le trigger
@@ -243,6 +263,7 @@ function healthCheck_() {
 
   // 2. Vérifier le label Gmail
   var config = getConfig();
+  var props = PropertiesService.getUserProperties();
   var label = GmailApp.getUserLabelByName(config.LABEL_NAME);
   results.label = !!label;
 
@@ -258,6 +279,17 @@ function healthCheck_() {
   var lastLogs = getSyncLog(1);
   if (lastLogs.length > 0) {
     results.lastSync = lastLogs[0].date;
+  }
+
+  // 5. Dernier scan et prochain scan
+  var lastScanIso = props.getProperty("LAST_SCAN_TIME");
+  if (lastScanIso) {
+    results.lastScanTime = new Date(lastScanIso);
+    results.lastScanSummary = props.getProperty("LAST_SCAN_SUMMARY") || "";
+    if (results.trigger) {
+      var intervalMs = parseInt(config.SCAN_INTERVAL_HOURS, 10) * 3600000;
+      results.nextScanApprox = new Date(results.lastScanTime.getTime() + intervalMs);
+    }
   }
 
   return results;

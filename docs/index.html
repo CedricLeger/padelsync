@@ -218,7 +218,7 @@
     /* ====== FEATURES ====== */
     .features {
       padding: 40px 24px 100px;
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -229,7 +229,7 @@
 
     .feature-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
       margin-top: 48px;
     }
@@ -384,7 +384,11 @@
     }
 
     /* ====== RESPONSIVE ====== */
-    @media (max-width: 700px) {
+    @media (max-width: 900px) {
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
       .feature-grid { grid-template-columns: 1fr; }
       .steps { flex-direction: column; align-items: center; }
       .hero { min-height: 90vh; }
@@ -398,7 +402,7 @@
     <div class="hero-content">
       <img src="logo_128.png" alt="Padel Sync" class="hero-logo">
       <h1>Vos matchs de padel, <em>automatiquement</em> dans votre agenda</h1>
-      <p>Padel Sync lit vos emails de r&eacute;servation et cr&eacute;e les &eacute;v&eacute;nements dans Google Calendar. Z&eacute;ro effort, z&eacute;ro oubli.</p>
+      <p>Padel Sync lit vos emails de r&eacute;servation et cr&eacute;e les &eacute;v&eacute;nements dans Google Calendar. Con&ccedil;u pour les joueurs de padel en Martinique. Z&eacute;ro effort, z&eacute;ro oubli.</p>
       <span class="hero-badge">Add-on Google Workspace gratuit</span>
     </div>
     <div class="wave">
@@ -443,6 +447,16 @@
         <div class="feature-icon">&#128274;</div>
         <h3>100% priv&eacute;</h3>
         <p>Aucun serveur externe. Tout reste dans votre compte Google. Z&eacute;ro donn&eacute;es partag&eacute;es.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#127466;&#127479;</div>
+        <h3>Fait pour la Martinique</h3>
+        <p>Con&ccedil;u pour les joueurs de padel en Martinique. Supporte les clubs locaux, fuseau horaire Antilles inclus.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#128241;</div>
+        <h3>Compatible iPhone</h3>
+        <p>Vos matchs se synchronisent automatiquement avec Apple Calendar via votre compte Google. Rappels inclus.</p>
       </div>
     </div>
   </section>

@@ -68,10 +68,12 @@ function getCalendar_(config) {
  * Sauvegarde la configuration depuis l'UI.
  * Valide chaque champ avant écriture (whitelist de clés + validateurs).
  * @param {Object} newConfig - Les nouvelles valeurs de configuration.
+ * @return {string[]} Liste des clés avec des valeurs invalides (vide si tout est OK).
  */
 function saveConfig(newConfig) {
   var props = PropertiesService.getUserProperties();
   var oldInterval = props.getProperty("SCAN_INTERVAL_HOURS") || DEFAULT_CONFIG.SCAN_INTERVAL_HOURS;
+  var invalidKeys = [];
 
   for (var key in newConfig) {
     if (!CONFIG_VALIDATORS.hasOwnProperty(key)) {
@@ -79,6 +81,7 @@ function saveConfig(newConfig) {
       continue;
     }
     if (!CONFIG_VALIDATORS[key](newConfig[key])) {
+      invalidKeys.push(key);
       Logger.log("Config: valeur invalide pour " + key + " — " + String(newConfig[key]).substring(0, 50));
       continue;
     }
@@ -97,4 +100,5 @@ function saveConfig(newConfig) {
   }
 
   Logger.log("Configuration sauvegardée.");
+  return invalidKeys;
 }

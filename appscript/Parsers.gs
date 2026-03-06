@@ -56,7 +56,8 @@ function parseInvitation_(text, config) {
     court: cleanCourtName_(courtRaw),
     type: "invitation",
     inviter: inviter,
-    location: extractLocation_(text)
+    location: extractLocation_(text),
+    codes: extractCodes_(text)
   };
 }
 

@@ -39,7 +39,8 @@ function htmlToText_(html) {
     "&eacute;": "é", "&egrave;": "è", "&agrave;": "à", "&ccedil;": "ç",
     "&ocirc;": "ô", "&ucirc;": "û", "&icirc;": "î", "&acirc;": "â",
     "&ecirc;": "ê", "&uuml;": "ü", "&Eacute;": "É",
-    "&rsquo;": "'"
+    "&rsquo;": "'", "&ndash;": "–", "&mdash;": "—",
+    "&hellip;": "…", "&laquo;": "«", "&raquo;": "»"
   };
   text = text.replace(/&[a-zA-Z]+;|&#\d+;/g, function(match) {
     if (ENTITIES[match]) return ENTITIES[match];
